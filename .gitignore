@@ -19,4 +19,8 @@ obj/
 /dataSources.local.xml
 /.idea/
 .DS_Store
-/logs/
+**/Logs/
+
+# Environment variables
+.env
+*.env
