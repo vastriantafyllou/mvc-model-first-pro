@@ -4,6 +4,7 @@ using SchoolApp.Data;
 using SchoolApp.Repositories;
 using SchoolApp.Services;
 using Serilog;
+using DotNetEnv;
 
 namespace SchoolApp;
 
@@ -11,10 +12,16 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Env.Load();
+        
         var builder = WebApplication.CreateBuilder(args);
         
         var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-        connString = connString!.Replace("{DB_PASS}", Environment.GetEnvironmentVariable("DB_PASS") ?? "");
+        connString = connString!
+            .Replace("{DB_PASS}", Environment.GetEnvironmentVariable("DB_PASS") ?? "")
+            .Replace("{DB_SERVER}", Environment.GetEnvironmentVariable("DB_SERVER") ?? "")
+            .Replace("{DB_NAME}", Environment.GetEnvironmentVariable("DB_NAME") ?? "")
+            .Replace("{DB_USER}", Environment.GetEnvironmentVariable("DB_USER") ?? "");
         
         builder.Services.AddDbContext<SchoolAppDbContext>(options => options.UseSqlServer(connString));
         builder.Services.AddRepositories();
